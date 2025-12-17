@@ -431,7 +431,9 @@ warn_on_root = 1
 #data/audio/*.wav
 #data/images/original/*
 #
-
+android.sdk = 33
+android.ndk = 25b
+android.sdk_build_tools_version = 33.0.0
 
 #    -----------------------------------------------------------------------------
 #    Profiles
