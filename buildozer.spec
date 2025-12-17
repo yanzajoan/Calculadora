@@ -450,3 +450,15 @@ warn_on_root = 1
 #    Then, invoke the command line with the "demo" profile:
 #
 #buildozer --profile demo android debug
+# Agrega estas líneas en la sección [app] o al final:
+
+# Usa una versión más nueva y estable del SDK
+android.sdk = 33
+android.ndk = 25b
+android.ndk_path = 
+
+# Especifica versión exacta de build-tools
+android.sdk_build_tools_version = 33.0.0
+
+# Asegura que use Python 3.9 (compatible)
+android.p4a_branch = develop
