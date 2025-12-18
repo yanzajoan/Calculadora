@@ -5,7 +5,14 @@ title = Calculadora
 
 # (str) Package name
 package.name = calculadora
-
+[app]
+title = Calculadora
+package.name = calculadora
+# ... otras opciones ...
+android.sdk = 33
+android.ndk = 25b
+android.sdk_build_tools_version = 33.0.0
+android.p4a_branch = develop 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
 
@@ -453,14 +460,3 @@ android.sdk_build_tools_version = 33.0.0
 #
 #buildozer --profile demo android debug
 # Agrega estas líneas en la sección [app] o al final:
-
-# Usa una versión más nueva y estable del SDK
-android.sdk = 33
-android.ndk = 25b
-android.ndk_path = 
-
-# Especifica versión exacta de build-tools
-android.sdk_build_tools_version = 33.0.0
-
-# Asegura que use Python 3.9 (compatible)
-android.p4a_branch = develop
