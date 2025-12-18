@@ -1,40 +1,69 @@
-name: CI
+name: Build Android APK
 on:
   push:
+    branches: [ main ]
+  pull_request:
     branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
+      # 1. Obtener el código del repositorio
       - uses: actions/checkout@v4
-
-      - name: Get Date
-        id: get-date
+      
+      # 2. Configurar Python
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      # 3. Instalar dependencias del sistema
+      - name: Install system dependencies
         run: |
-          echo "date=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
-
-      - name: Cache Buildozer global directory
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip \
+            git \
+            zip \
+            unzip \
+            openjdk-11-jdk \
+            autoconf \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo5 \
+            cmake \
+            libffi-dev \
+            libssl-dev
+          
+      # 4. Instalar Buildozer y dependencias Python
+      - name: Install Buildozer
+        run: |
+          pip3 install --upgrade pip
+          pip3 install buildozer
+          pip3 install cython
+          
+      # 5. Cache de dependencias de Buildozer (opcional, acelera builds)
+      - name: Cache Buildozer dependencies
         uses: actions/cache@v3
         with:
-          path: .buildozer_global
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
-
-      - uses: actions/cache@v3
-        with:
           path: .buildozer
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
-
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: buildozer android debug
-          buildozer_version: stable
-
-      - name: Upload artifacts
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
+            
+      # 6. Construir la APK
+      - name: Build APK with Buildozer
+        run: |
+          buildozer android debug
+          
+      # 7. Subir el APK como artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: package
-          path: ${{ steps.buildozer.outputs.filename }}
+          name: android-app
+          path: bin/*.apk
